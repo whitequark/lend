@@ -1,0 +1,17 @@
+test: lend.o test.c
+	cc -g -o $@ $^
+
+lend.o: lend.c
+	cc -g -c -o $@ $^ \
+		-Dmalloc=lend_malloc \
+		-Dcalloc=lend_calloc \
+		-Drealloc=lend_realloc \
+		-Dfree=lend_free
+
+gnaw: test
+	bash -c 'while ./test $$(($$RANDOM * $$RANDOM)) $$((0x100000)) 1000000; do :; done'
+
+wipe:
+	rm *.o test
+
+.PHONY: wipe gnaw
